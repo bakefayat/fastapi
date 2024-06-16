@@ -6,32 +6,36 @@ app = FastAPI()
 
 
 @app.get("/ads")
-async def get_ads() -> dict:
-    return {"ads": ads}
+async def get_ads() -> list[AdModel]:
+    return [
+        AdModel(**a) for a in ads
+    ]
 
 @app.get("/ads/{ad_id}")
-async def get_add(ad_id: int) -> dict:
-    ad = ads.get(ad_id)
-    if ad:
-        return {"ad": ad}
-    raise HTTPException(status_code=404, detail="No such ad")
+async def get_add(ad_id: int) -> AdModel:
+    ad = next((ad for ad in ads if ad["id"] == ad_id), None)
+    if ad is None:
+        raise HTTPException(status_code=404, detail="No such ad")
+    return ad
 
 @app.get("/ads/work/{work_title}")
-async def get_works(work_title: WorkURLChoices) -> dict:
+async def get_works(work_title: WorkURLChoices) -> list[AdModel]:
     ads_based_on_work = [
-        ad for ad in ads.values() if ad["work"] == work_title.value
+        ad for ad in ads if ad["work"] == work_title.value
     ]
+
     if not ads_based_on_work:
         raise HTTPException(status_code=404, detail="No such ad")
-    return {"ads": ads_based_on_work}
+    return ads_based_on_work
 
 @app.post("/ads/create/{ad_id}", status_code=201)
-async def create_ad(ad_id: int, ad:AdModel) -> dict:
-    if ad_id in ads:
+async def create_ad(ad:AdModel) -> AdModel:
+    existed_ad = next((a for a in ads if a["id"] == ad.id), None)
+    if existed_ad is not None:
         raise HTTPException(status_code=400, detail="ad is alredy exists")
     
-    ads[ad_id] = ad
-    return {"ad": ads[ad_id]}
+    ads.append(dict(ad))
+    return ad
 
 @app.delete("/ads/delete/{ad_id}", status_code=204)
 async def delete_ad(ad_id: int):
