@@ -10,5 +10,11 @@ ads = {
         "work": "EMS",
         "phone": 9156962252,
         "res_phone": 9379339007
+    },
+    3: {
+        "name": "elyas",
+        "work": "IT",
+        "phone": 9154879652,
+        "res_phone": 9745312548
     }
 }
