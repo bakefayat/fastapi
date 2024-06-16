@@ -1,28 +1,16 @@
 from enum import Enum
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from ads import ads
+from schemas import AdModel, WorkURLChoices, ads
 
 app = FastAPI()
 
-class WorkURLChoices(Enum):
-    EMS = 'EMS'
-    IT = 'IT'
-
-
-class Ad(BaseModel):
-    name: str
-    work: WorkURLChoices
-    phone: int
-    res_phone: int
-
 
 @app.get("/ads")
-def get_ads() -> dict:
+async def get_ads() -> dict:
     return {"ads": ads}
 
 @app.get("/ads/{ad_id}")
-def get_add(ad_id: int) -> dict:
+async def get_add(ad_id: int) -> dict:
     ad = ads.get(ad_id)
     if ad:
         return {"ad": ad}
@@ -38,7 +26,7 @@ async def get_works(work_title: WorkURLChoices) -> dict:
     return {"ads": ads_based_on_work}
 
 @app.post("/ads/create/{ad_id}", status_code=201)
-def create_ad(ad_id: int, ad:Ad) -> dict:
+async def create_ad(ad_id: int, ad:AdModel) -> dict:
     if ad_id in ads:
         raise HTTPException(status_code=400, detail="ad is alredy exists")
     
@@ -46,7 +34,7 @@ def create_ad(ad_id: int, ad:Ad) -> dict:
     return {"ad": ads[ad_id]}
 
 @app.delete("/ads/delete/{ad_id}", status_code=204)
-def delete_ad(ad_id: int):
+async def delete_ad(ad_id: int):
     if ad_id not in ads:
         raise HTTPException(status_code=404, detail="not existed")
     

@@ -1,3 +1,18 @@
+from enum import Enum
+from pydantic import BaseModel
+
+class WorkURLChoices(Enum):
+    EMS = "EMS"
+    IT = "IT"
+
+
+class AdModel(BaseModel):
+    name: str
+    work: WorkURLChoices
+    phone: int
+    res_phone: int
+
+
 ads = {
     1: {
         "name": "ehsan",
