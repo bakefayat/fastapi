@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 class WorkURLChoices(Enum):
     EMS = "EMS"
@@ -14,7 +14,9 @@ class AdsBaseModel(BaseModel):
     res_phone: int
 
 class AdsCreateModel(AdsBaseModel):
-    pass
+    @validator('work', pre=True)
+    def title_case_work(cls, value):
+        return value.upper()
 
 
 class AdsModel(AdsBaseModel):
@@ -23,7 +25,7 @@ class AdsModel(AdsBaseModel):
 
 ads_list = [
     {
-        "id": 0,
+        "id": 1,
         "name": "ehsan",
         "work": "IT",
         "gender": "male",
@@ -31,7 +33,7 @@ ads_list = [
         "res_phone": 9011259601
     },
     {
-        "id": 1,
+        "id": 2,
         "name": "oways",
         "work": "EMS",
         "gender": "male",
@@ -39,7 +41,7 @@ ads_list = [
         "res_phone": 9379339007
     },
     {
-        "id": 2,
+        "id": 3,
         "name": "sahar",
         "work": "IT",
         "gender": "female",

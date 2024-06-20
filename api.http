@@ -1,0 +1,14 @@
+POST http://127.0.0.1:8000/ads/
+Content-Type: application/json
+
+{
+    "name": "mahla",
+    "work": "iT",
+    "gender": "female",
+    "phone": 9371304458,
+    "res_phone": 9334732030
+}
+
+###
+GET http://localhost:8000/ads?gender=male&work_title=it
+# GET http://localhost:8000/ads

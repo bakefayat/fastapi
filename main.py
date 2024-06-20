@@ -13,7 +13,7 @@ async def get_ads(
 
     filterd_ads = [AdsModel(**a) for a in ads_list]
     if work_title:
-        filterd_ads = [a for a in filterd_ads if a.work.value == work_title.value]
+        filterd_ads = [a for a in filterd_ads if a.work.value.lower() == work_title.value.lower()]
     if gender:
         filterd_ads = [a for a in filterd_ads if a.gender == gender]
 
@@ -22,9 +22,9 @@ async def get_ads(
 @app.post("/ads", status_code=201)
 async def create_ad(ad:AdsCreateModel) -> AdsModel:
     id = ads_list[-1]["id"] + 1
-    ad_with_id = AdsModel(id=id, **ad.model_dump()).model_dump()
-    ads_list.append(ad_with_id)
-    return ad_with_id
+    ad = AdsModel(id=id, **ad.model_dump()).model_dump()
+    ads_list.append(ad)
+    return ad
 
 @app.get("/ads/{ad_id}")
 async def get_add(ad_id: int) -> AdsModel:
